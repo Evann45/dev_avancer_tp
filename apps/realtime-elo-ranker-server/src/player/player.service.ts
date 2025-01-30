@@ -18,30 +18,32 @@ export class PlayerService {
     return this.playerRepository.find();
   }
 
-  async findOne(id: string): Promise<Player> {
-    const player = await this.playerRepository.findOneBy({ id });
-    if (!player) {
-      throw new Error(`Player with id ${id} not found`);
-    }
-    return player;
+  findOne(id: string, callback: (err: Error | null, player: Player | null) => void): void {
+    this.playerRepository.findOneBy({ id }).then(player => {
+      if (!player) {
+        return callback(new Error(`Player with id ${id} not found`), null);
+      }
+      callback(null, player);
+    }).catch(err => callback(err, null));
   }
 
-  async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
+  create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, player: Player | null) => void): void {
     const player = new Player();
     player.id = createPlayerDto.id;
     player.rank = createPlayerDto.rank || 1000; // Set default rank to 1000 if not provided
-    const newPlayer = await this.playerRepository.save(player);
-    this.eventEmitter.emit('player.created', {
-      player:{
+    this.playerRepository.save(player).then(newPlayer => {
+      this.eventEmitter.emit('player.created', {player : {
         id: newPlayer.id,
         rank: newPlayer.rank
-      }
-    });
-    return newPlayer;
+      }});
+      callback(null, newPlayer);
+    }).catch(err => callback(err, null));
   }
 
-  async remove(id: number): Promise<void> {
-    await this.playerRepository.delete(id);
+  remove(id: string, callback: (err: Error | null) => void): void {
+    this.playerRepository.delete({ id }).then(() => {
+      callback(null);
+    }).catch(err => callback(err));
   }
 
   

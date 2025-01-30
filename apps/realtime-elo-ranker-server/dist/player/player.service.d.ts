@@ -7,7 +7,7 @@ export declare class PlayerService {
     private eventEmitter;
     constructor(playerRepository: Repository<Player>, eventEmitter: EventEmitter2);
     findAll(): Promise<Player[]>;
-    findOne(id: string): Promise<Player>;
-    create(createPlayerDto: CreatePlayerDto): Promise<Player>;
-    remove(id: number): Promise<void>;
+    findOne(id: string, callback: (err: Error | null, player: Player | null) => void): void;
+    create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, player: Player | null) => void): void;
+    remove(id: string, callback: (err: Error | null) => void): void;
 }

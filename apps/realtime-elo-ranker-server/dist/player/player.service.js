@@ -26,28 +26,30 @@ let PlayerService = class PlayerService {
     findAll() {
         return this.playerRepository.find();
     }
-    async findOne(id) {
-        const player = await this.playerRepository.findOneBy({ id });
-        if (!player) {
-            throw new Error(`Player with id ${id} not found`);
-        }
-        return player;
+    findOne(id, callback) {
+        this.playerRepository.findOneBy({ id }).then(player => {
+            if (!player) {
+                return callback(new Error(`Player with id ${id} not found`), null);
+            }
+            callback(null, player);
+        }).catch(err => callback(err, null));
     }
-    async create(createPlayerDto) {
+    create(createPlayerDto, callback) {
         const player = new player_entity_1.Player();
         player.id = createPlayerDto.id;
         player.rank = createPlayerDto.rank || 1000;
-        const newPlayer = await this.playerRepository.save(player);
-        this.eventEmitter.emit('player.created', {
-            player: {
-                id: newPlayer.id,
-                rank: newPlayer.rank
-            }
-        });
-        return newPlayer;
+        this.playerRepository.save(player).then(newPlayer => {
+            this.eventEmitter.emit('player.created', { player: {
+                    id: newPlayer.id,
+                    rank: newPlayer.rank
+                } });
+            callback(null, newPlayer);
+        }).catch(err => callback(err, null));
     }
-    async remove(id) {
-        await this.playerRepository.delete(id);
+    remove(id, callback) {
+        this.playerRepository.delete({ id }).then(() => {
+            callback(null);
+        }).catch(err => callback(err));
     }
 };
 exports.PlayerService = PlayerService;

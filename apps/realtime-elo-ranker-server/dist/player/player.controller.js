@@ -23,14 +23,29 @@ let PlayerController = class PlayerController {
     findAll() {
         return this.playerService.findAll();
     }
-    findOne(id) {
-        return this.playerService.findOne(id);
+    findOne(id, res) {
+        this.playerService.findOne(id, (err, player) => {
+            if (err) {
+                return res.status(common_1.HttpStatus.NOT_FOUND).json({ message: err.message });
+            }
+            res.status(common_1.HttpStatus.OK).json(player);
+        });
     }
-    create(createPlayerDto) {
-        return this.playerService.create(createPlayerDto);
+    create(createPlayerDto, res) {
+        this.playerService.create(createPlayerDto, (err, player) => {
+            if (err) {
+                return res.status(common_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+            }
+            res.status(common_1.HttpStatus.CREATED).json(player);
+        });
     }
-    remove(id) {
-        return this.playerService.remove(+id);
+    remove(id, res) {
+        this.playerService.remove(id, err => {
+            if (err) {
+                return res.status(common_1.HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+            }
+            res.status(common_1.HttpStatus.NO_CONTENT).send();
+        });
     }
 };
 exports.PlayerController = PlayerController;
@@ -41,25 +56,28 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PlayerController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
 ], PlayerController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)('player'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_player_dto_1.CreatePlayerDto]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [create_player_dto_1.CreatePlayerDto, Object]),
+    __metadata("design:returntype", void 0)
 ], PlayerController.prototype, "create", null);
 __decorate([
-    (0, common_1.Delete)(),
+    (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
 ], PlayerController.prototype, "remove", null);
 exports.PlayerController = PlayerController = __decorate([
     (0, common_1.Controller)('api'),

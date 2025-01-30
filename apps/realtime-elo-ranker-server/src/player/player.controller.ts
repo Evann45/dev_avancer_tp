@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, HttpStatus, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { PlayerService } from './player.service';
 import { Player } from '../entities/player.entity';
 import { CreatePlayerDto } from './dto/create-player-dto';
@@ -12,18 +13,33 @@ export class PlayerController {
     return this.playerService.findAll();
   }
 
-  @Get()
-  findOne(@Param('id') id: string): Promise<Player> {
-    return this.playerService.findOne(id);
+  @Get(':id')
+  findOne(@Param('id') id: string, @Res() res: Response): void {
+    this.playerService.findOne(id, (err, player) => {
+      if (err) {
+        return res.status(HttpStatus.NOT_FOUND).json({ message: err.message });
+      }
+      res.status(HttpStatus.OK).json(player);
+    });
   }
 
   @Post('player')
-  create(@Body() createPlayerDto: CreatePlayerDto): Promise<Player> {
-    return this.playerService.create(createPlayerDto);
+  create(@Body() createPlayerDto: CreatePlayerDto, @Res() res: Response): void {
+    this.playerService.create(createPlayerDto, (err, player) => {
+      if (err) {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      }
+      res.status(HttpStatus.CREATED).json(player);
+    });
   }
 
-  @Delete()
-  remove(@Param('id') id: string): Promise<void> {
-    return this.playerService.remove(+id);
+  @Delete(':id')
+  remove(@Param('id') id: string, @Res() res: Response): void {
+    this.playerService.remove(id, err => {
+      if (err) {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      }
+      res.status(HttpStatus.NO_CONTENT).send();
+    });
   }
 }
