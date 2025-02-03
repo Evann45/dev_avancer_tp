@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Player } from '../entities/player.entity';
+import { Player } from './entities/player.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreatePlayerDto } from './dto/create-player-dto';
 export declare class PlayerService {

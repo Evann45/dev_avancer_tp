@@ -16,7 +16,7 @@ exports.PlayerService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const player_entity_1 = require("../entities/player.entity");
+const player_entity_1 = require("./entities/player.entity");
 const event_emitter_1 = require("@nestjs/event-emitter");
 let PlayerService = class PlayerService {
     constructor(playerRepository, eventEmitter) {

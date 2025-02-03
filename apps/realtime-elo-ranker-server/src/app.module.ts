@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlayerModule } from './player/player.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { Player } from './entities/player.entity';
+import { Player } from './player/entities/player.entity';
 import { RankingModule } from './ranking/ranking.module';
 
 @Module({

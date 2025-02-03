@@ -13,7 +13,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const player_module_1 = require("./player/player.module");
 const event_emitter_1 = require("@nestjs/event-emitter");
-const player_entity_1 = require("./entities/player.entity");
+const player_entity_1 = require("./player/entities/player.entity");
 const ranking_module_1 = require("./ranking/ranking.module");
 let AppModule = class AppModule {
 };

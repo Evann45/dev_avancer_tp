@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Player } from '../entities/player.entity';
+import { Player } from './entities/player.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreatePlayerDto } from './dto/create-player-dto';
 

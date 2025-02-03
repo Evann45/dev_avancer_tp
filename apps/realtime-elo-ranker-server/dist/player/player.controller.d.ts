@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { PlayerService } from './player.service';
-import { Player } from '../entities/player.entity';
+import { Player } from './entities/player.entity';
 import { CreatePlayerDto } from './dto/create-player-dto';
 export declare class PlayerController {
     private readonly playerService;

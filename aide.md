@@ -69,3 +69,6 @@ npm i --save @nestjs/event-emitter
 
 ## Commande pour générer tout l'arborescence d'un module
 nest generate ressource <nom>
+
+## Mettre a jour corepack
+corepack prepare --activate

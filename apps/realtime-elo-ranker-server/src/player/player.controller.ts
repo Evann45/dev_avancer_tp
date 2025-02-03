@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, HttpStatus, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { PlayerService } from './player.service';
-import { Player } from '../entities/player.entity';
+import { Player } from './entities/player.entity';
 import { CreatePlayerDto } from './dto/create-player-dto';
 
 @Controller('api')
