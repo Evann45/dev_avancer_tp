@@ -1,1 +1,1 @@
-{"version":3,"file":"ranking.entity.js","sourceRoot":"","sources":["../../../src/ranking/entities/ranking.entity.ts"],"names":[],"mappings":";;;AAAA,MAAa,OAAO;CAAG;AAAvB,0BAAuB"}
+{"version":3,"file":"ranking.entity.js","sourceRoot":"","sources":["../../../src/ranking/entities/ranking.entity.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAAwD;AAGjD,IAAM,OAAO,GAAb,MAAM,OAAO;CAanB,CAAA;AAbY,0BAAO;AAElB;IADC,IAAA,uBAAa,GAAE;;mCACL;AAGX;IADC,IAAA,gBAAM,GAAE;;uCACM;AAGf;IADC,IAAA,gBAAM,GAAE;;sCACK;AAGd;IADC,IAAA,gBAAM,GAAE;;qCACK;kBAXH,OAAO;IADnB,IAAA,gBAAM,GAAE;GACI,OAAO,CAanB"}

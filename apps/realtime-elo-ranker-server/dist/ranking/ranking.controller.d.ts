@@ -1,12 +1,11 @@
 import { RankingService } from './ranking.service';
-import { CreateRankingDto } from './dto/create-ranking.dto';
-import { UpdateRankingDto } from './dto/update-ranking.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Observable } from 'rxjs';
+import { Player } from '../player/player.interface';
 export declare class RankingController {
     private readonly rankingService;
-    constructor(rankingService: RankingService);
-    create(createRankingDto: CreateRankingDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateRankingDto: UpdateRankingDto): string;
-    remove(id: string): string;
+    private readonly eventEmitter;
+    constructor(rankingService: RankingService, eventEmitter: EventEmitter2);
+    getRanking(): Promise<Player[]>;
+    sse(): Observable<MessageEvent>;
 }

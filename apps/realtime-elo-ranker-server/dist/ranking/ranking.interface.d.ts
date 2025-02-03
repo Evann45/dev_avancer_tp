@@ -1,4 +1,4 @@
-export declare class Ranking {
+export interface Ranking {
     id: number;
     winner: string;
     loser: string;

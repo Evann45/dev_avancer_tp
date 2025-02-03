@@ -6,6 +6,7 @@ import { PlayerModule } from './player/player.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Player } from './player/entities/player.entity';
 import { RankingModule } from './ranking/ranking.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RankingModule } from './ranking/ranking.module';
       ignoreErrors: false,
     }),
     RankingModule,
+    MatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

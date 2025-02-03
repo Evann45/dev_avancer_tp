@@ -1,34 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Sse } from '@nestjs/common';
 import { RankingService } from './ranking.service';
-import { CreateRankingDto } from './dto/create-ranking.dto';
-import { UpdateRankingDto } from './dto/update-ranking.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Observable, merge, fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Player} from '../player/player.interface';
 
-@Controller('ranking')
+@Controller('api/ranking')
 export class RankingController {
-  constructor(private readonly rankingService: RankingService) {}
+  constructor(private readonly rankingService: RankingService,
+              private readonly eventEmitter: EventEmitter2) {}
 
-  @Post()
-  create(@Body() createRankingDto: CreateRankingDto) {
-    return this.rankingService.create(createRankingDto);
-  }
+  @Get("ranking")
+    getRanking(): Promise<Player[]> {
+      return this.rankingService.getRanking();
+    }
 
-  @Get()
-  findAll() {
-    return this.rankingService.findAll();
-  }
+  
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rankingService.findOne(+id);
-  }
+  @Sse('events')
+  sse(): Observable<MessageEvent> {
+    const playerCreated = fromEvent(this.eventEmitter, 'player.created').pipe(
+      map((event: {player: Player}) => {
+        return <MessageEvent>{
+          data: {
+            type: 'RankingUpdate',
+            player: event.player,
+          }
+        }
+      }),
+    );
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRankingDto: UpdateRankingDto) {
-    return this.rankingService.update(+id, updateRankingDto);
-  }
+    const matchResult = fromEvent(this.eventEmitter, 'match.result').pipe(
+      map((event: { player: Player }) => {
+      return <MessageEvent>{
+        data: {
+        type: 'RankingUpdate',
+        player: event.player,
+        }
+      }
+      }),
+    );
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rankingService.remove(+id);
+    return merge(matchResult, playerCreated);
   }
 }
+
