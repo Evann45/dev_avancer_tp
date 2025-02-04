@@ -6,8 +6,10 @@ import { Player } from 'src/player/entities/player.entity';
 export class RankingService {
   constructor(private readonly playerService: PlayerService) {}
   
-  async getRanking(): Promise<Player[]> {
-    const players = await this.playerService.findAll();
-    return players.sort((a, b) => a.rank - b.rank);
+  getRanking(callback: (err: Error | null, players: Player[] | null) => void): void {
+    this.playerService.findAll().then(players => {
+      const sortedPlayers = players.sort((a, b) => b.rank - a.rank);
+      callback(null, sortedPlayers);
+    }).catch(err => callback(err, null));
   }
 }

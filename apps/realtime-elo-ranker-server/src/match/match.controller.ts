@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MatchService } from './match.service';
+import { Match } from './entities/match.entity';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
 
-@Controller('match')
+@Controller('api/match')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
-  @Post()
-  create(@Body() createMatchDto: CreateMatchDto) {
-    return this.matchService.create(createMatchDto);
-  }
-
   @Get()
-  findAll() {
+  findAll(): Promise<Match[]> {
     return this.matchService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number): Promise<Match | null> {
     return this.matchService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
-    return this.matchService.update(+id, updateMatchDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.matchService.remove(+id);
+  @Post()
+  async create(@Body() match: CreateMatchDto): Promise<any> {
+    try {
+      return await this.matchService.createMatch(match);
+    } catch (e) {
+      return 'Erreur lors de la création du match : ' + e;
+    }
   }
 }

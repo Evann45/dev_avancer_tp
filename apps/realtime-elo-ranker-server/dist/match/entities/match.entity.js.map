@@ -1,1 +1,1 @@
-{"version":3,"file":"match.entity.js","sourceRoot":"","sources":["../../../src/match/entities/match.entity.ts"],"names":[],"mappings":";;;AAAA,MAAa,KAAK;CAAG;AAArB,sBAAqB"}
+{"version":3,"file":"match.entity.js","sourceRoot":"","sources":["../../../src/match/entities/match.entity.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAAwD;AAGjD,IAAM,KAAK,GAAX,MAAM,KAAK;CAYjB,CAAA;AAZY,sBAAK;AAEhB;IADC,IAAA,uBAAa,GAAE;;iCACL;AAGX;IADC,IAAA,gBAAM,GAAE;;qCACM;AAGf;IADC,IAAA,gBAAM,GAAE;;oCACK;AAGd;IADC,IAAA,gBAAM,GAAE;;mCACK;gBAXH,KAAK;IADjB,IAAA,gBAAM,GAAE;GACI,KAAK,CAYjB"}

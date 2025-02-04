@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RankingController = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,8 +23,13 @@ let RankingController = class RankingController {
         this.rankingService = rankingService;
         this.eventEmitter = eventEmitter;
     }
-    getRanking() {
-        return this.rankingService.getRanking();
+    getRanking(res) {
+        this.rankingService.getRanking((err, players) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.status(200).json(players);
+        });
     }
     sse() {
         const playerCreated = (0, rxjs_1.fromEvent)(this.eventEmitter, 'player.created').pipe((0, operators_1.map)((event) => {
@@ -45,10 +53,11 @@ let RankingController = class RankingController {
 };
 exports.RankingController = RankingController;
 __decorate([
-    (0, common_1.Get)("ranking"),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
 ], RankingController.prototype, "getRanking", null);
 __decorate([
     (0, common_1.Sse)('events'),

@@ -1,12 +1,10 @@
 import { MatchService } from './match.service';
+import { Match } from './entities/match.entity';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
 export declare class MatchController {
     private readonly matchService;
     constructor(matchService: MatchService);
-    create(createMatchDto: CreateMatchDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateMatchDto: UpdateMatchDto): string;
-    remove(id: string): string;
+    findAll(): Promise<Match[]>;
+    findOne(id: number): Promise<Match | null>;
+    create(match: CreateMatchDto): Promise<any>;
 }

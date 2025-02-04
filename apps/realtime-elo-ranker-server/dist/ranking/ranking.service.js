@@ -16,9 +16,11 @@ let RankingService = class RankingService {
     constructor(playerService) {
         this.playerService = playerService;
     }
-    async getRanking() {
-        const players = await this.playerService.findAll();
-        return players.sort((a, b) => a.rank - b.rank);
+    getRanking(callback) {
+        this.playerService.findAll().then(players => {
+            const sortedPlayers = players.sort((a, b) => b.rank - a.rank);
+            callback(null, sortedPlayers);
+        }).catch(err => callback(err, null));
     }
 };
 exports.RankingService = RankingService;

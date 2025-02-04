@@ -16,13 +16,9 @@ exports.MatchController = void 0;
 const common_1 = require("@nestjs/common");
 const match_service_1 = require("./match.service");
 const create_match_dto_1 = require("./dto/create-match.dto");
-const update_match_dto_1 = require("./dto/update-match.dto");
 let MatchController = class MatchController {
     constructor(matchService) {
         this.matchService = matchService;
-    }
-    create(createMatchDto) {
-        return this.matchService.create(createMatchDto);
     }
     findAll() {
         return this.matchService.findAll();
@@ -30,51 +26,38 @@ let MatchController = class MatchController {
     findOne(id) {
         return this.matchService.findOne(+id);
     }
-    update(id, updateMatchDto) {
-        return this.matchService.update(+id, updateMatchDto);
-    }
-    remove(id) {
-        return this.matchService.remove(+id);
+    async create(match) {
+        try {
+            return await this.matchService.createMatch(match);
+        }
+        catch (e) {
+            return 'Erreur lors de la création du match : ' + e;
+        }
     }
 };
 exports.MatchController = MatchController;
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto]),
-    __metadata("design:returntype", void 0)
-], MatchController.prototype, "create", null);
-__decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MatchController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
 ], MatchController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_match_dto_1.UpdateMatchDto]),
-    __metadata("design:returntype", void 0)
-], MatchController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], MatchController.prototype, "remove", null);
+    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto]),
+    __metadata("design:returntype", Promise)
+], MatchController.prototype, "create", null);
 exports.MatchController = MatchController = __decorate([
-    (0, common_1.Controller)('match'),
+    (0, common_1.Controller)('api/match'),
     __metadata("design:paramtypes", [match_service_1.MatchService])
 ], MatchController);
 //# sourceMappingURL=match.controller.js.map

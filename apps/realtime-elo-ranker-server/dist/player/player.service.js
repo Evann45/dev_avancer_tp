@@ -35,16 +35,36 @@ let PlayerService = class PlayerService {
         }).catch(err => callback(err, null));
     }
     create(createPlayerDto, callback) {
-        const player = new player_entity_1.Player();
-        player.id = createPlayerDto.id;
-        player.rank = createPlayerDto.rank || 1000;
-        this.playerRepository.save(player).then(newPlayer => {
-            this.eventEmitter.emit('player.created', { player: {
-                    id: newPlayer.id,
-                    rank: newPlayer.rank
-                } });
-            callback(null, newPlayer);
-        }).catch(err => callback(err, null));
+        if (createPlayerDto === null || createPlayerDto === undefined) {
+            return callback(new Error('User is null or undefined'), null);
+        }
+        if (createPlayerDto.rank === null || createPlayerDto.rank === undefined) {
+            this.findAll().then(players => {
+                let rank = players.reduce((acc, p) => acc + p.rank, 0) / players.length;
+                rank = Math.round(rank);
+                createPlayerDto.rank = rank;
+                this.playerRepository.save(createPlayerDto).then(newPlayer => {
+                    this.eventEmitter.emit('player.created', {
+                        player: {
+                            id: newPlayer.id,
+                            rank: newPlayer.rank,
+                        },
+                    });
+                    callback(null, newPlayer);
+                }).catch(err => callback(err, null));
+            }).catch(err => callback(err, null));
+        }
+        else {
+            this.playerRepository.save(createPlayerDto).then(newPlayer => {
+                this.eventEmitter.emit('player.created', {
+                    player: {
+                        id: newPlayer.id,
+                        rank: newPlayer.rank,
+                    },
+                });
+                callback(null, newPlayer);
+            }).catch(err => callback(err, null));
+        }
     }
     remove(id, callback) {
         this.playerRepository.delete({ id }).then(() => {

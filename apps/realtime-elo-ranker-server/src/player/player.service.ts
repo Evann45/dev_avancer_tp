@@ -27,17 +27,38 @@ export class PlayerService {
     }).catch(err => callback(err, null));
   }
 
-  create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, player: Player | null) => void): void {
-    const player = new Player();
-    player.id = createPlayerDto.id;
-    player.rank = createPlayerDto.rank || 1000; // Set default rank to 1000 if not provided
-    this.playerRepository.save(player).then(newPlayer => {
-      this.eventEmitter.emit('player.created', {player : {
-        id: newPlayer.id,
-        rank: newPlayer.rank
-      }});
-      callback(null, newPlayer);
-    }).catch(err => callback(err, null));
+  create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, newPlayer: Player | null) => void): void {
+    if (createPlayerDto === null || createPlayerDto === undefined) {
+      return callback(new Error('User is null or undefined'), null);
+    }
+    if (createPlayerDto.rank === null || createPlayerDto.rank === undefined) {
+      // Fais la moyenne des rank de tous les joueurs
+      this.findAll().then(players => {
+        let rank = players.reduce((acc, p) => acc + p.rank, 0) / players.length;
+        rank = Math.round(rank);
+        createPlayerDto.rank = rank;
+
+        this.playerRepository.save(createPlayerDto).then(newPlayer => {
+          this.eventEmitter.emit('player.created', {
+            player: {
+              id: newPlayer.id,
+              rank: newPlayer.rank,
+            },
+          });
+          callback(null, newPlayer);
+        }).catch(err => callback(err, null));
+      }).catch(err => callback(err, null));
+    } else {
+      this.playerRepository.save(createPlayerDto).then(newPlayer => {
+        this.eventEmitter.emit('player.created', {
+          player: {
+            id: newPlayer.id,
+            rank: newPlayer.rank,
+          },
+        });
+        callback(null, newPlayer);
+      }).catch(err => callback(err, null));
+    }
   }
 
   remove(id: string, callback: (err: Error | null) => void): void {
