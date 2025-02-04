@@ -20,41 +20,56 @@ let MatchController = class MatchController {
     constructor(matchService) {
         this.matchService = matchService;
     }
-    findAll() {
-        return this.matchService.findAll();
+    findAll(res) {
+        this.matchService.findAll().then(matches => {
+            res.status(200).json(matches);
+        }).catch(err => {
+            res.status(500).json({ message: err.message });
+        });
     }
-    findOne(id) {
-        return this.matchService.findOne(+id);
+    findOne(id, res) {
+        this.matchService.findOne(+id, (err, match) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            if (!match) {
+                return res.status(404).json({ message: `Match with id ${id} not found` });
+            }
+            res.status(200).json(match);
+        });
     }
-    async create(match) {
-        try {
-            return await this.matchService.createMatch(match);
-        }
-        catch (e) {
-            return 'Erreur lors de la création du match : ' + e;
-        }
+    create(match, res) {
+        this.matchService.createMatch(match, (err, newMatch) => {
+            if (err) {
+                return res.status(500).json({ message: 'Erreur lors de la création du match : ' + err.message });
+            }
+            res.status(201).json(newMatch);
+        });
     }
 };
 exports.MatchController = MatchController;
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
 ], MatchController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
 ], MatchController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto, Object]),
+    __metadata("design:returntype", void 0)
 ], MatchController.prototype, "create", null);
 exports.MatchController = MatchController = __decorate([
     (0, common_1.Controller)('api/match'),

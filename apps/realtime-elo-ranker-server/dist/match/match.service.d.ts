@@ -9,8 +9,8 @@ export declare class MatchService {
     private readonly eventEmitter;
     constructor(matchRepository: Repository<Match>, playerService: PlayerService, eventEmitter: EventEmitter2);
     findAll(): Promise<Match[]>;
-    createMatch(match: CreateMatchDto): Promise<Match>;
-    findOne(id: number): Promise<Match | null>;
-    calculateElo(winner: string, loser: string): Promise<number>;
-    updateRank(winner: string, loser: string): Promise<void>;
+    createMatch(match: CreateMatchDto, callback: (err: Error | null, newMatch: Match | null) => void): void;
+    findOne(id: number, callback: (err: Error | null, match: Match | null) => void): void;
+    calculateElo(winner: string, loser: string, callback: (err: Error | null, expectedScore: number | null) => void): void;
+    updateRank(winner: string, loser: string, callback: (err: Error | null) => void): void;
 }

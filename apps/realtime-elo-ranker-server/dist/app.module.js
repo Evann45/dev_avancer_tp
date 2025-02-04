@@ -13,7 +13,6 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const player_module_1 = require("./player/player.module");
 const event_emitter_1 = require("@nestjs/event-emitter");
-const player_entity_1 = require("./player/entities/player.entity");
 const ranking_module_1 = require("./ranking/ranking.module");
 const match_module_1 = require("./match/match.module");
 let AppModule = class AppModule {
@@ -25,7 +24,7 @@ exports.AppModule = AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'database.sqlite',
-                entities: [player_entity_1.Player],
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
                 synchronize: true,
             }),
             player_module_1.PlayerModule,

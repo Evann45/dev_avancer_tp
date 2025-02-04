@@ -10,4 +10,5 @@ export declare class PlayerService {
     findOne(id: string, callback: (err: Error | null, player: Player | null) => void): void;
     create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, newPlayer: Player | null) => void): void;
     remove(id: string, callback: (err: Error | null) => void): void;
+    updateRank(id: string, newRank: number, callback: (err: Error | null) => void): void;
 }

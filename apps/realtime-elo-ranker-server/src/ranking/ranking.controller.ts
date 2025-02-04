@@ -50,4 +50,3 @@ export class RankingController {
     return merge(matchResult, playerCreated);
   }
 }
-

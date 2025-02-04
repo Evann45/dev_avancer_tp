@@ -71,6 +71,11 @@ let PlayerService = class PlayerService {
             callback(null);
         }).catch(err => callback(err));
     }
+    updateRank(id, newRank, callback) {
+        this.playerRepository.update(id, { rank: newRank }).then(() => {
+            callback(null);
+        }).catch(err => callback(err));
+    }
 };
 exports.PlayerService = PlayerService;
 exports.PlayerService = PlayerService = __decorate([
