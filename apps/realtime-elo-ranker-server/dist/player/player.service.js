@@ -72,6 +72,9 @@ let PlayerService = class PlayerService {
         }).catch(err => callback(err));
     }
     updateRank(id, newRank, callback) {
+        if (newRank < 0) {
+            newRank = 0;
+        }
         this.playerRepository.update(id, { rank: newRank }).then(() => {
             callback(null);
         }).catch(err => callback(err));
