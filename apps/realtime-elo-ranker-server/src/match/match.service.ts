@@ -28,9 +28,15 @@ export class MatchService {
         if (err || !loser) {
           return callback(new Error('Loser not found'), null);
         }
-        this.updateRank(match.winner, match.loser, (err) => {
+        this.updateRank(match.winner, match.loser, (err, winnerNewRank, loserNewRank) => {
           if (err) {
             return callback(err, null);
+          }
+          if (winnerNewRank !== undefined) {
+            winner.rank = winnerNewRank;
+          }
+          if (loserNewRank !== undefined) {
+            loser.rank = loserNewRank;
           }
           this.eventEmitter.emit('match.result', {
             player: {
@@ -76,7 +82,7 @@ export class MatchService {
     });
   }
 
-  updateRank(winner: string, loser: string, callback: (err: Error | null) => void): void {
+  updateRank(winner: string, loser: string, callback: (err: Error | null, winnerNewRank?: number, loserNewRank?: number) => void): void {
     const k = 32;
     this.playerService.findOne(winner, (err, winnerData) => {
       if (err || !winnerData) {
@@ -90,8 +96,16 @@ export class MatchService {
           if (err || expectedScore === null) {
             return callback(err);
           }
-          const winnerNewRank = winnerData.rank + k * (1 - expectedScore);
-          const loserNewRank = loserData.rank + k * (0 - expectedScore);
+          let winnerNewRank = Math.round(winnerData.rank + k * (1 - expectedScore));
+          let loserNewRank = Math.round(loserData.rank + k * (0 - expectedScore));
+
+          // Ensure ranks are not negative
+          if (winnerNewRank < 0) {
+            winnerNewRank = 0;
+          }
+          if (loserNewRank < 0) {
+            loserNewRank = 0;
+          }
 
           this.playerService.updateRank(winner, winnerNewRank, (err) => {
             if (err) {
@@ -101,7 +115,7 @@ export class MatchService {
               if (err) {
                 return callback(err);
               }
-              callback(null);
+              callback(null, winnerNewRank, loserNewRank);
             });
           });
         });
