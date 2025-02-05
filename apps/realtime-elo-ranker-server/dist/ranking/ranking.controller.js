@@ -15,66 +15,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RankingController = void 0;
 const common_1 = require("@nestjs/common");
 const ranking_service_1 = require("./ranking.service");
-const create_ranking_dto_1 = require("./dto/create-ranking.dto");
-const update_ranking_dto_1 = require("./dto/update-ranking.dto");
+const event_emitter_1 = require("@nestjs/event-emitter");
+const rxjs_1 = require("rxjs");
+const operators_1 = require("rxjs/operators");
 let RankingController = class RankingController {
-    constructor(rankingService) {
+    constructor(rankingService, eventEmitter) {
         this.rankingService = rankingService;
+        this.eventEmitter = eventEmitter;
     }
-    create(createRankingDto) {
-        return this.rankingService.create(createRankingDto);
+    getRanking(res) {
+        this.rankingService.getRanking((err, players) => {
+            if (err) {
+                return res.status(500).json({ message: err.message });
+            }
+            res.status(200).json(players);
+        });
     }
-    findAll() {
-        return this.rankingService.findAll();
-    }
-    findOne(id) {
-        return this.rankingService.findOne(+id);
-    }
-    update(id, updateRankingDto) {
-        return this.rankingService.update(+id, updateRankingDto);
-    }
-    remove(id) {
-        return this.rankingService.remove(+id);
+    sse() {
+        const playerCreated = (0, rxjs_1.fromEvent)(this.eventEmitter, 'player.created').pipe((0, operators_1.map)((event) => {
+            return {
+                data: {
+                    type: 'RankingUpdate',
+                    player: event.player,
+                }
+            };
+        }));
+        const matchResult = (0, rxjs_1.fromEvent)(this.eventEmitter, 'match.result').pipe((0, operators_1.map)((event) => {
+            return {
+                data: {
+                    type: 'RankingUpdate',
+                    player: event.player,
+                }
+            };
+        }));
+        return (0, rxjs_1.merge)(matchResult, playerCreated);
     }
 };
 exports.RankingController = RankingController;
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_ranking_dto_1.CreateRankingDto]),
-    __metadata("design:returntype", void 0)
-], RankingController.prototype, "create", null);
-__decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], RankingController.prototype, "getRanking", null);
+__decorate([
+    (0, common_1.Sse)('events'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], RankingController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], RankingController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_ranking_dto_1.UpdateRankingDto]),
-    __metadata("design:returntype", void 0)
-], RankingController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], RankingController.prototype, "remove", null);
+    __metadata("design:returntype", rxjs_1.Observable)
+], RankingController.prototype, "sse", null);
 exports.RankingController = RankingController = __decorate([
-    (0, common_1.Controller)('ranking'),
-    __metadata("design:paramtypes", [ranking_service_1.RankingService])
+    (0, common_1.Controller)('api/ranking'),
+    __metadata("design:paramtypes", [ranking_service_1.RankingService,
+        event_emitter_1.EventEmitter2])
 ], RankingController);
 //# sourceMappingURL=ranking.controller.js.map

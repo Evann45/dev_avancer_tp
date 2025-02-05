@@ -1,9 +1,7 @@
-import { CreateRankingDto } from './dto/create-ranking.dto';
-import { UpdateRankingDto } from './dto/update-ranking.dto';
+import { PlayerService } from 'src/player/player.service';
+import { Player } from 'src/player/entities/player.entity';
 export declare class RankingService {
-    create(createRankingDto: CreateRankingDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateRankingDto: UpdateRankingDto): string;
-    remove(id: number): string;
+    private readonly playerService;
+    constructor(playerService: PlayerService);
+    getRanking(callback: (err: Error | null, players: Player[] | null) => void): void;
 }

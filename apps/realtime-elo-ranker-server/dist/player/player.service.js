@@ -16,7 +16,7 @@ exports.PlayerService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const player_entity_1 = require("../entities/player.entity");
+const player_entity_1 = require("./entities/player.entity");
 const event_emitter_1 = require("@nestjs/event-emitter");
 let PlayerService = class PlayerService {
     constructor(playerRepository, eventEmitter) {
@@ -26,28 +26,58 @@ let PlayerService = class PlayerService {
     findAll() {
         return this.playerRepository.find();
     }
-    async findOne(id) {
-        const player = await this.playerRepository.findOneBy({ id });
-        if (!player) {
-            throw new Error(`Player with id ${id} not found`);
-        }
-        return player;
-    }
-    async create(createPlayerDto) {
-        const player = new player_entity_1.Player();
-        player.id = createPlayerDto.id;
-        player.rank = createPlayerDto.rank || 1000;
-        const newPlayer = await this.playerRepository.save(player);
-        this.eventEmitter.emit('player.created', {
-            player: {
-                id: newPlayer.id,
-                rank: newPlayer.rank
+    findOne(id, callback) {
+        this.playerRepository.findOneBy({ id }).then(player => {
+            if (!player) {
+                return callback(new Error(`Player with id ${id} not found`), null);
             }
-        });
-        return newPlayer;
+            callback(null, player);
+        }).catch(err => callback(err, null));
     }
-    async remove(id) {
-        await this.playerRepository.delete(id);
+    create(createPlayerDto, callback) {
+        if (createPlayerDto === null || createPlayerDto === undefined) {
+            return callback(new Error('User is null or undefined'), null);
+        }
+        if (createPlayerDto.rank === null || createPlayerDto.rank === undefined) {
+            this.findAll().then(players => {
+                let rank = players.reduce((acc, p) => acc + p.rank, 0) / players.length;
+                rank = Math.round(rank);
+                createPlayerDto.rank = rank;
+                this.playerRepository.save(createPlayerDto).then(newPlayer => {
+                    this.eventEmitter.emit('player.created', {
+                        player: {
+                            id: newPlayer.id,
+                            rank: newPlayer.rank,
+                        },
+                    });
+                    callback(null, newPlayer);
+                }).catch(err => callback(err, null));
+            }).catch(err => callback(err, null));
+        }
+        else {
+            this.playerRepository.save(createPlayerDto).then(newPlayer => {
+                this.eventEmitter.emit('player.created', {
+                    player: {
+                        id: newPlayer.id,
+                        rank: newPlayer.rank,
+                    },
+                });
+                callback(null, newPlayer);
+            }).catch(err => callback(err, null));
+        }
+    }
+    remove(id, callback) {
+        this.playerRepository.delete({ id }).then(() => {
+            callback(null);
+        }).catch(err => callback(err));
+    }
+    updateRank(id, newRank, callback) {
+        if (newRank < 0) {
+            newRank = 0;
+        }
+        this.playerRepository.update(id, { rank: newRank }).then(() => {
+            callback(null);
+        }).catch(err => callback(err));
     }
 };
 exports.PlayerService = PlayerService;

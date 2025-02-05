@@ -4,15 +4,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlayerModule } from './player/player.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { Player } from './entities/player.entity';
+import { Player } from './player/entities/player.entity';
 import { RankingModule } from './ranking/ranking.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'database.sqlite',
-      entities: [Player],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     PlayerModule,
@@ -33,6 +34,7 @@ import { RankingModule } from './ranking/ranking.module';
       ignoreErrors: false,
     }),
     RankingModule,
+    MatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRankingDto } from './dto/create-ranking.dto';
-import { UpdateRankingDto } from './dto/update-ranking.dto';
+import { PlayerService } from 'src/player/player.service';
+import { Player } from 'src/player/entities/player.entity';
 
 @Injectable()
 export class RankingService {
-  create(createRankingDto: CreateRankingDto) {
-    return 'This action adds a new ranking';
-  }
-
-  findAll() {
-    return `This action returns all ranking`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} ranking`;
-  }
-
-  update(id: number, updateRankingDto: UpdateRankingDto) {
-    return `This action updates a #${id} ranking`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} ranking`;
+  constructor(private readonly playerService: PlayerService) {}
+  
+  getRanking(callback: (err: Error | null, players: Player[] | null) => void): void {
+    this.playerService.findAll().then(players => {
+      const sortedPlayers = players.sort((a, b) => b.rank - a.rank);
+      callback(null, sortedPlayers);
+    }).catch(err => callback(err, null));
   }
 }

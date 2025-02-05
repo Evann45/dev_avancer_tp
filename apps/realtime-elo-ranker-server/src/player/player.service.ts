@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Player } from '../entities/player.entity';
+import { Player } from './entities/player.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreatePlayerDto } from './dto/create-player-dto';
 
@@ -18,31 +18,62 @@ export class PlayerService {
     return this.playerRepository.find();
   }
 
-  async findOne(id: string): Promise<Player> {
-    const player = await this.playerRepository.findOneBy({ id });
-    if (!player) {
-      throw new Error(`Player with id ${id} not found`);
-    }
-    return player;
-  }
-
-  async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
-    const player = new Player();
-    player.id = createPlayerDto.id;
-    player.rank = createPlayerDto.rank || 1000; // Set default rank to 1000 if not provided
-    const newPlayer = await this.playerRepository.save(player);
-    this.eventEmitter.emit('player.created', {
-      player:{
-        id: newPlayer.id,
-        rank: newPlayer.rank
+  findOne(id: string, callback: (err: Error | null, player: Player | null) => void): void {
+    this.playerRepository.findOneBy({ id }).then(player => {
+      if (!player) {
+        return callback(new Error(`Player with id ${id} not found`), null);
       }
-    });
-    return newPlayer;
+      callback(null, player);
+    }).catch(err => callback(err, null));
   }
 
-  async remove(id: number): Promise<void> {
-    await this.playerRepository.delete(id);
+  create(createPlayerDto: CreatePlayerDto, callback: (err: Error | null, newPlayer: Player | null) => void): void {
+    if (createPlayerDto === null || createPlayerDto === undefined) {
+      return callback(new Error('User is null or undefined'), null);
+    }
+    if (createPlayerDto.rank === null || createPlayerDto.rank === undefined) {
+      // Fais la moyenne des rank de tous les joueurs
+      this.findAll().then(players => {
+        let rank = players.reduce((acc, p) => acc + p.rank, 0) / players.length;
+        rank = Math.round(rank);
+        createPlayerDto.rank = rank;
+
+        this.playerRepository.save(createPlayerDto).then(newPlayer => {
+          this.eventEmitter.emit('player.created', {
+            player: {
+              id: newPlayer.id,
+              rank: newPlayer.rank,
+            },
+          });
+          callback(null, newPlayer);
+        }).catch(err => callback(err, null));
+      }).catch(err => callback(err, null));
+    } else {
+      this.playerRepository.save(createPlayerDto).then(newPlayer => {
+        this.eventEmitter.emit('player.created', {
+          player: {
+            id: newPlayer.id,
+            rank: newPlayer.rank,
+          },
+        });
+        callback(null, newPlayer);
+      }).catch(err => callback(err, null));
+    }
   }
 
-  
+  remove(id: string, callback: (err: Error | null) => void): void {
+    this.playerRepository.delete({ id }).then(() => {
+      callback(null);
+    }).catch(err => callback(err));
+  }
+
+  updateRank(id: string, newRank: number, callback: (err: Error | null) => void): void {
+    if (newRank < 0) {
+      newRank = 0;
+    }
+    this.playerRepository.update(id, { rank: newRank }).then(() => {
+      callback(null);
+    }).catch(err => callback(err));
+  }
+
 }

@@ -68,4 +68,7 @@ curl localhost:3000/api/ranking
 npm i --save @nestjs/event-emitter
 
 ## Commande pour générer tout l'arborescence d'un module
-nest generate ressource <nom>
+nest generate resource <nom>
+
+## Mettre a jour corepack
+corepack prepare --activate
