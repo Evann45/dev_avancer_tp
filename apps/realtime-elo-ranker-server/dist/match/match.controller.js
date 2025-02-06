@@ -38,10 +38,11 @@ let MatchController = class MatchController {
             res.status(200).json(match);
         });
     }
-    create(match, res) {
-        this.matchService.createMatch(match, (err, newMatch) => {
+    createMatch(createMatchDto, res) {
+        this.matchService.createMatch(createMatchDto, (err, newMatch) => {
             if (err) {
-                return res.status(500).json({ message: 'Erreur lors de la création du match : ' + err.message });
+                console.error('Error while creating match', err);
+                return res.status(500).json({ message: 'Error while creating match', error: err.message });
             }
             res.status(201).json(newMatch);
         });
@@ -70,7 +71,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto, Object]),
     __metadata("design:returntype", void 0)
-], MatchController.prototype, "create", null);
+], MatchController.prototype, "createMatch", null);
 exports.MatchController = MatchController = __decorate([
     (0, common_1.Controller)('api/match'),
     __metadata("design:paramtypes", [match_service_1.MatchService])

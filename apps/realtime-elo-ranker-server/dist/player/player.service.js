@@ -34,16 +34,17 @@ let PlayerService = class PlayerService {
             callback(null, player);
         }).catch(err => callback(err, null));
     }
-    create(createPlayerDto, callback) {
-        if (createPlayerDto === null || createPlayerDto === undefined) {
+    create(player, callback) {
+        console.log('create dans le service', player);
+        if (player === null || player === undefined) {
             return callback(new Error('User is null or undefined'), null);
         }
-        if (createPlayerDto.rank === null || createPlayerDto.rank === undefined) {
+        if (player.rank === null || player.rank === undefined) {
             this.findAll().then(players => {
                 let rank = players.reduce((acc, p) => acc + p.rank, 0) / players.length;
                 rank = Math.round(rank);
-                createPlayerDto.rank = rank;
-                this.playerRepository.save(createPlayerDto).then(newPlayer => {
+                player.rank = rank;
+                this.playerRepository.save(player).then(newPlayer => {
                     this.eventEmitter.emit('player.created', {
                         player: {
                             id: newPlayer.id,
@@ -55,7 +56,7 @@ let PlayerService = class PlayerService {
             }).catch(err => callback(err, null));
         }
         else {
-            this.playerRepository.save(createPlayerDto).then(newPlayer => {
+            this.playerRepository.save(player).then(newPlayer => {
                 this.eventEmitter.emit('player.created', {
                     player: {
                         id: newPlayer.id,
@@ -66,16 +67,24 @@ let PlayerService = class PlayerService {
             }).catch(err => callback(err, null));
         }
     }
-    remove(id, callback) {
-        this.playerRepository.delete({ id }).then(() => {
-            callback(null);
-        }).catch(err => callback(err));
-    }
     updateRank(id, newRank, callback) {
+        if (!id) {
+            console.error('Player ID is required');
+            return callback(new Error('Player ID is required'));
+        }
         if (newRank < 0) {
             newRank = 0;
         }
+        console.log(`Updating rank for player ${id} to ${newRank}`);
         this.playerRepository.update(id, { rank: newRank }).then(() => {
+            callback(null);
+        }).catch(err => {
+            console.error('Error updating rank', err);
+            callback(err);
+        });
+    }
+    remove(id, callback) {
+        this.playerRepository.delete({ id }).then(() => {
             callback(null);
         }).catch(err => callback(err));
     }

@@ -29,6 +29,7 @@ let MatchService = class MatchService {
         return this.matchRepository.find();
     }
     createMatch(match, callback) {
+        const draw = match.draw;
         this.playerService.findOne(match.winner, (err, winner) => {
             if (err || !winner) {
                 return callback(new Error('Winner not found'), null);
@@ -37,7 +38,7 @@ let MatchService = class MatchService {
                 if (err || !loser) {
                     return callback(new Error('Loser not found'), null);
                 }
-                this.updateRank(match.winner, match.loser, (err, winnerNewRank, loserNewRank) => {
+                this.updateRank(match.winner, match.loser, draw, (err, winnerNewRank, loserNewRank) => {
                     if (err) {
                         return callback(err, null);
                     }
@@ -88,7 +89,7 @@ let MatchService = class MatchService {
             });
         });
     }
-    updateRank(winner, loser, callback) {
+    updateRank(winner, loser, isDraw, callback) {
         const k = 32;
         this.playerService.findOne(winner, (err, winnerData) => {
             if (err || !winnerData) {
@@ -102,8 +103,16 @@ let MatchService = class MatchService {
                     if (err || expectedScore === null) {
                         return callback(err);
                     }
-                    let winnerNewRank = Math.round(winnerData.rank + k * (1 - expectedScore));
-                    let loserNewRank = Math.round(loserData.rank + k * (0 - expectedScore));
+                    let winnerNewRank;
+                    let loserNewRank;
+                    if (isDraw) {
+                        winnerNewRank = Math.round(winnerData.rank + k * (0.5 - expectedScore));
+                        loserNewRank = Math.round(loserData.rank + k * (0.5 - expectedScore));
+                    }
+                    else {
+                        winnerNewRank = Math.round(winnerData.rank + k * (1 - expectedScore));
+                        loserNewRank = Math.round(loserData.rank + k * (0 - expectedScore));
+                    }
                     if (winnerNewRank < 0) {
                         winnerNewRank = 0;
                     }

@@ -12,5 +12,5 @@ export declare class MatchService {
     createMatch(match: CreateMatchDto, callback: (err: Error | null, newMatch: Match | null) => void): void;
     findOne(id: number, callback: (err: Error | null, match: Match | null) => void): void;
     calculateElo(winner: string, loser: string, callback: (err: Error | null, expectedScore: number | null) => void): void;
-    updateRank(winner: string, loser: string, callback: (err: Error | null, winnerNewRank?: number, loserNewRank?: number) => void): void;
+    updateRank(winner: string, loser: string, isDraw: boolean, callback: (err: Error | null, winnerNewRank?: number, loserNewRank?: number) => void): void;
 }

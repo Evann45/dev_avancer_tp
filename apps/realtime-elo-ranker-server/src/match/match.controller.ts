@@ -31,10 +31,11 @@ export class MatchController {
   }
 
   @Post()
-  create(@Body() match: CreateMatchDto, @Res() res: Response): void {
-    this.matchService.createMatch(match, (err, newMatch) => {
+  createMatch(@Body() createMatchDto: CreateMatchDto, @Res() res: Response): void {
+    this.matchService.createMatch(createMatchDto, (err, newMatch) => {
       if (err) {
-        return res.status(500).json({ message: 'Erreur lors de la création du match : ' + err.message });
+        console.error('Error while creating match', err);
+        return res.status(500).json({ message: 'Error while creating match', error: err.message });
       }
       res.status(201).json(newMatch);
     });

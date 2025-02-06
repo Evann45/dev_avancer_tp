@@ -20,6 +20,7 @@ export class MatchService {
   }
 
   createMatch(match: CreateMatchDto, callback: (err: Error | null, newMatch: Match | null) => void): void {
+    const draw = match.draw;
     this.playerService.findOne(match.winner, (err, winner) => {
       if (err || !winner) {
         return callback(new Error('Winner not found'), null);
@@ -28,7 +29,7 @@ export class MatchService {
         if (err || !loser) {
           return callback(new Error('Loser not found'), null);
         }
-        this.updateRank(match.winner, match.loser, (err, winnerNewRank, loserNewRank) => {
+        this.updateRank(match.winner, match.loser, draw, (err, winnerNewRank, loserNewRank) => {
           if (err) {
             return callback(err, null);
           }
@@ -82,7 +83,7 @@ export class MatchService {
     });
   }
 
-  updateRank(winner: string, loser: string, callback: (err: Error | null, winnerNewRank?: number, loserNewRank?: number) => void): void {
+  updateRank(winner: string, loser: string, isDraw: boolean, callback: (err: Error | null, winnerNewRank?: number, loserNewRank?: number) => void): void {
     const k = 32;
     this.playerService.findOne(winner, (err, winnerData) => {
       if (err || !winnerData) {
@@ -96,8 +97,16 @@ export class MatchService {
           if (err || expectedScore === null) {
             return callback(err);
           }
-          let winnerNewRank = Math.round(winnerData.rank + k * (1 - expectedScore));
-          let loserNewRank = Math.round(loserData.rank + k * (0 - expectedScore));
+          let winnerNewRank;
+          let loserNewRank;
+
+          if (isDraw) {
+            winnerNewRank = Math.round(winnerData.rank + k * (0.5 - expectedScore));
+            loserNewRank = Math.round(loserData.rank + k * (0.5 - expectedScore));
+          } else {
+            winnerNewRank = Math.round(winnerData.rank + k * (1 - expectedScore));
+            loserNewRank = Math.round(loserData.rank + k * (0 - expectedScore));
+          }
 
           // Ensure ranks are not negative
           if (winnerNewRank < 0) {

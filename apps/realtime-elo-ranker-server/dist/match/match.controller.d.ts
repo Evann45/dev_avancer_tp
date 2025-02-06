@@ -6,5 +6,5 @@ export declare class MatchController {
     constructor(matchService: MatchService);
     findAll(res: Response): void;
     findOne(id: number, res: Response): void;
-    create(match: CreateMatchDto, res: Response): void;
+    createMatch(createMatchDto: CreateMatchDto, res: Response): void;
 }
