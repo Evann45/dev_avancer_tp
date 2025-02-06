@@ -72,3 +72,14 @@ nest generate resource <nom>
 
 ## Mettre a jour corepack
 corepack prepare --activate
+
+
+## Tests
+npm i --save-dev @nestjs/testing
+npm install --save-dev jest @types/jest ts-jest
+
+ensuite on créer le fichier jest.config.js a la racine 
+on spécifie le repéertoire ou sont les test avec le DIR
+
+puis on exécute les tests avec la commande
+npm run test
