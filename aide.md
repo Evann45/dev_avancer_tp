@@ -73,6 +73,9 @@ nest generate resource <nom>
 ## Mettre a jour corepack
 corepack prepare --activate
 
+## SI probleme dépendance
+pnpm install -w @nestjs/typeorm
+
 
 ## Tests
 npm i --save-dev @nestjs/testing

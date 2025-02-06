@@ -27,15 +27,27 @@ importers:
       '@nestjs/cli':
         specifier: ^11.0.2
         version: 11.0.2(@types/node@22.10.9)
+      '@nestjs/testing':
+        specifier: ^11.0.8
+        version: 11.0.8(@nestjs/common@11.0.5)(@nestjs/core@11.0.5)
+      '@types/jest':
+        specifier: ^29.5.14
+        version: 29.5.14
       generate-react-cli:
         specifier: ^8.4.9
         version: 8.4.9
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.10.9)(ts-node@10.9.2)
       motion:
         specifier: ^11.17.0
         version: 11.18.2(react-dom@19.0.0)(react@19.0.0)
       next:
         specifier: 15.1.4
-        version: 15.1.4(react-dom@19.0.0)(react@19.0.0)
+        version: 15.1.4(@babel/core@7.26.0)(react-dom@19.0.0)(react@19.0.0)
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.26.0)(jest@29.7.0)(typescript@5.7.3)
       typescript:
         specifier: ^5
         version: 5.7.3
@@ -2034,6 +2046,24 @@ packages:
       '@nestjs/common': 11.0.5(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/core': 11.0.5(@nestjs/common@11.0.5)(@nestjs/platform-express@11.0.5)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/platform-express': 11.0.5(@nestjs/common@11.0.5)(@nestjs/core@11.0.5)
+      tslib: 2.8.1
+    dev: true
+
+  /@nestjs/testing@11.0.8(@nestjs/common@11.0.5)(@nestjs/core@11.0.5):
+    resolution: {integrity: sha512-5Reqec4MQSm4nFasKE5Pd799cAx3MmjkweF17Wgj/EJNWhFgVdv6N9OUIWXbU8nc8Pjso1fJmv0KJyN6h51qOA==}
+    peerDependencies:
+      '@nestjs/common': ^11.0.0
+      '@nestjs/core': ^11.0.0
+      '@nestjs/microservices': ^11.0.0
+      '@nestjs/platform-express': ^11.0.0
+    peerDependenciesMeta:
+      '@nestjs/microservices':
+        optional: true
+      '@nestjs/platform-express':
+        optional: true
+    dependencies:
+      '@nestjs/common': 11.0.5(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 11.0.5(@nestjs/common@11.0.5)(@nestjs/platform-express@11.0.5)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       tslib: 2.8.1
     dev: true
 
@@ -8140,7 +8170,7 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /next@15.1.4(react-dom@19.0.0)(react@19.0.0):
+  /next@15.1.4(@babel/core@7.26.0)(react-dom@19.0.0)(react@19.0.0):
     resolution: {integrity: sha512-mTaq9dwaSuwwOrcu3ebjDYObekkxRnXpuVL21zotM8qE2W0HBOdVIdg2Li9QjMEZrj73LN96LcWcz62V19FjAg==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
@@ -8169,7 +8199,7 @@ packages:
       postcss: 8.4.31
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
-      styled-jsx: 5.1.6(react@19.0.0)
+      styled-jsx: 5.1.6(@babel/core@7.26.0)(react@19.0.0)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.1.4
       '@next/swc-darwin-x64': 15.1.4
@@ -10039,7 +10069,7 @@ packages:
       peek-readable: 5.3.1
     dev: true
 
-  /styled-jsx@5.1.6(react@19.0.0):
+  /styled-jsx@5.1.6(@babel/core@7.26.0)(react@19.0.0):
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -10052,6 +10082,7 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
+      '@babel/core': 7.26.0
       client-only: 0.0.1
       react: 19.0.0
     dev: true
