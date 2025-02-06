@@ -1,73 +1,102 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { MatchController } from './match.controller';
 import { MatchService } from './match.service';
-import { PlayerService } from '../player/player.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Match } from './entities/match.entity';
-import { Player } from '../player/entities/player.entity';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
+import { CreateMatchDto } from './dto/create-match.dto';
+import { Response } from 'express';
 
 describe('MatchController', () => {
   let controller: MatchController;
   let service: MatchService;
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [MatchController],
-    })
-      .useMocker((token) => {
-        if (token === MatchService) {
-          return { createMatch: jest.fn(), findAll: jest.fn() };
-        }
-        if (token === PlayerService) {
-          return { findOne: jest.fn(), updateRank: jest.fn() };
-        }
-        if (token === getRepositoryToken(Match)) {
-          return { save: jest.fn() };
-        }
-        if (token === getRepositoryToken(Player)) {
-          return { findOne: jest.fn() };
-        }
-        if (token === EventEmitter2) {
-          return { emit: jest.fn() };
-        }
-        if (typeof token === 'function') {
-          const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-          const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-          return new Mock();
-        }
-      })
-      .compile();
+      providers: [
+        {
+          provide: MatchService,
+          useValue: {
+            createMatch: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
 
-    controller = moduleRef.get(MatchController);
-    service = moduleRef.get(MatchService);
+    controller = moduleRef.get<MatchController>(MatchController);
+    service = moduleRef.get<MatchService>(MatchService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('createMatch', () => {
-    it('should create a match', async () => {
-      const matchDto = { winner: '1', loser: '2', draw: false };
-      const result = { id: '1', ...matchDto };
+  describe('findAll', () => {
+    it('should return all matches', async () => {
+      const mockResponse = [{ id: 1, winner: 'player1', loser: 'player2', draw: false }];
+      jest.spyOn(service, 'findAll').mockResolvedValue(mockResponse);
 
-      jest.spyOn(service, 'createMatch').mockResolvedValue(result as any);
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+      await controller.findAll(res);
 
-      expect(await controller.createMatch(matchDto)).toEqual(result);
-      expect(service.createMatch).toHaveBeenCalledWith(matchDto);
+      expect(service.findAll).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(mockResponse);
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of matches', async () => {
-      const result = [{ id: '1', winner: '1', loser: '2', draw: false }];
-      jest.spyOn(service, 'findAll').mockResolvedValue(result as any);
+  describe('findOne', () => {
+    it('should return a match by ID', async () => {
+      const mockMatch = { id: 1, winner: 'player1', loser: 'player2', draw: false };
+      jest.spyOn(service, 'findOne').mockImplementation((id, callback) => callback(null, mockMatch));
 
-      expect(await controller.findAll()).toBe(result);
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+      controller.findOne(1, res);
+
+      expect(service.findOne).toHaveBeenCalledWith(1, expect.any(Function));
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(mockMatch);
+    });
+
+    it('should return 404 if match not found', async () => {
+      jest.spyOn(service, 'findOne').mockImplementation((id, callback) => callback(null, null));
+
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+      controller.findOne(1, res);
+
+      expect(service.findOne).toHaveBeenCalledWith(1, expect.any(Function));
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Match with id 1 not found' });
+    });
+  });
+
+  describe('createMatch', () => {
+    it('should create a new match', async () => {
+      const matchDto: CreateMatchDto = { winner: 'player1', loser: 'player2', draw: false };
+      const mockMatch = { id: 1, ...matchDto };
+
+      jest.spyOn(service, 'createMatch').mockImplementation((dto, callback) => callback(null, mockMatch));
+
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+      await controller.createMatch(matchDto, res);
+
+      expect(service.createMatch).toHaveBeenCalledWith(matchDto, expect.any(Function));
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(mockMatch);
+    });
+
+    it('should return 500 if an error occurs', async () => {
+      const matchDto: CreateMatchDto = { winner: 'player1', loser: 'player2', draw: false };
+      const error = new Error('Something went wrong');
+
+      jest.spyOn(service, 'createMatch').mockImplementation((dto, callback) => callback(error, null));
+
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+      await controller.createMatch(matchDto, res);
+
+      expect(service.createMatch).toHaveBeenCalledWith(matchDto, expect.any(Function));
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Error while creating match', error: error.message });
     });
   });
 });

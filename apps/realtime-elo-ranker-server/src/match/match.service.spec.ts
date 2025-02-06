@@ -3,7 +3,6 @@ import { MatchService } from './match.service';
 import { PlayerService } from '../player/player.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Match } from './entities/match.entity';
-import { Player } from '../player/entities/player.entity';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 

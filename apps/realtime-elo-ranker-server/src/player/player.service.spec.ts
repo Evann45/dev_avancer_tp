@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Player } from './entities/player.entity';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { CreatePlayerDto } from './dto/create-player-dto';
 
 const moduleMocker = new ModuleMocker(global);
