@@ -77,7 +77,7 @@ corepack prepare --activate
 pnpm install -w @nestjs/typeorm
 
 
-## Tests
+## Tests Unitaires
 npm i --save-dev @nestjs/testing
 npm install --save-dev jest @types/jest ts-jest
 
@@ -86,3 +86,6 @@ on spécifie le repéertoire ou sont les test avec le DIR
 
 puis on exécute les tests avec la commande
 npm run test
+
+## Test E2E
+npm install --save-dev supertest

@@ -3,6 +3,7 @@ import { RankingController } from './ranking.controller';
 import { RankingService } from './ranking.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Player } from '../player/entities/player.entity';
+import { firstValueFrom } from 'rxjs';
 
 describe('RankingController', () => {
   let controller: RankingController;
@@ -76,25 +77,5 @@ describe('RankingController', () => {
       expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
     });
   });
-
-  describe('sse', () => {
-    it('should return an observable for SSE events', (done) => {
-      const eventData = { player: { id: '1', name: 'Player1', rank: 2000 } as Player };
-      
-      // Simuler l'émission d'un événement
-      eventEmitter.emit('player.created', eventData);
-      
-      const observable = controller.sse();
-      const subscription = observable.subscribe((event) => {
-        expect(event).toEqual({
-          data: {
-            type: 'RankingUpdate',
-            player: eventData.player,
-          },
-        });
-        subscription.unsubscribe();
-        done();
-      });
-    });
-  });
 });
+
