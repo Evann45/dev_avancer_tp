@@ -33,30 +33,8 @@ curl --location 'http://localhost:3000/player' --header 'Content-Type: applicati
     "id" : "Yannis",
     "rank" :2
 }'
-
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Yannis",
-    "rank" :3
-}'
-
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Evann",
-    "rank" :4
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Loann",
-    "rank" :5
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Jordan",
-    "rank" :6
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Khalil",
-    "rank" :99
-}'
 curl --location 'http://localhost:3000/api/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Yannis",
+    "id" : " Kévin",
     "rank" :99
 }'
 
