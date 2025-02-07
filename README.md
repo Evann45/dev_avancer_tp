@@ -1,5 +1,9 @@
 # Realtime Elo Ranker
 
+# Evann YANG
+# Groupe 31B
+# Lien GIT : https://github.com/Evann45/dev_avancer_tp/tree/master
+
 Realtime Elo Ranker est une application web permettant de simuler des matchs entre des joueurs et de calculer et afficher leur classement Elo en temps réel.
 
 ## Conteneurs Métiers
