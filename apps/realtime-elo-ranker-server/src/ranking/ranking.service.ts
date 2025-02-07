@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PlayerService } from 'src/player/player.service';
-import { Player } from 'src/player/entities/player.entity';
+import { PlayerService } from '../player/player.service';
+import { Player } from '../player/entities/player.entity';
 
 @Injectable()
 export class RankingService {

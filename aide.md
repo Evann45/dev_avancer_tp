@@ -33,30 +33,8 @@ curl --location 'http://localhost:3000/player' --header 'Content-Type: applicati
     "id" : "Yannis",
     "rank" :2
 }'
-
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Yannis",
-    "rank" :3
-}'
-
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Evann",
-    "rank" :4
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Loann",
-    "rank" :5
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Jordan",
-    "rank" :6
-}'
-curl --location 'http://localhost:3000/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Khalil",
-    "rank" :99
-}'
 curl --location 'http://localhost:3000/api/player' --header 'Content-Type: application/json' --data '{
-    "id" : "Yannis",
+    "id" : " Kévin",
     "rank" :99
 }'
 
@@ -72,3 +50,20 @@ nest generate resource <nom>
 
 ## Mettre a jour corepack
 corepack prepare --activate
+
+## SI probleme dépendance
+pnpm install -w @nestjs/typeorm
+
+
+## Tests Unitaires
+npm i --save-dev @nestjs/testing
+npm install --save-dev jest @types/jest ts-jest
+
+ensuite on créer le fichier jest.config.js a la racine 
+on spécifie le repéertoire ou sont les test avec le DIR
+
+puis on exécute les tests avec la commande
+npm run test
+
+## Test E2E
+npm install --save-dev supertest
